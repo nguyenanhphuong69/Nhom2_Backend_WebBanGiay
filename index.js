@@ -26,7 +26,7 @@ app.get('/', (req, res) => {
 })
 
 //cổng admin
-const adminRouter = require("./routers/user.model.js");
+const adminRouter = require("./routers/user.router.js");
 
 app.use("/admin/", adminRouter);
 
