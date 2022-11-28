@@ -27,8 +27,11 @@ app.get('/', (req, res) => {
 
 //cổng admin
 const adminRouter = require("./routers/user.model.js");
+//cổng product
+const productRouter = require("./routers/product.route.js");
 
 app.use("/admin/", adminRouter);
+app.use("/product/", productRouter);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
