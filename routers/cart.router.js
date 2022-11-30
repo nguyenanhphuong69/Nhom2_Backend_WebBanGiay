@@ -12,3 +12,4 @@ router.get(
 checkAuth.checkAuthCustomer,
 cartController.getCartItem
 );
+module.exports = router;
