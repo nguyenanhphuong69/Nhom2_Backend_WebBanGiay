@@ -29,9 +29,12 @@ app.get('/', (req, res) => {
 const adminRouter = require("./routers/user.router.js");
 //cổng product
 const productRouter = require("./routers/product.route.js");
+//cổng cart
+const cartRouter = require("./routers/cart.router.js")
 
 app.use("/admin/", adminRouter);
 app.use("/product/", productRouter);
+app.use("/cart/", cartRouter);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
