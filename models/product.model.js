@@ -23,6 +23,12 @@ module.exports = {
         "sanpham.deleted_fg"
       );
     return products;
+  },
+  
+  //lấy chi tiết từng sản phẩm
+  async getProductId(id) {
+    let product = await knex("sanpham").select("*").where("id", id);
+    return product;
   }
 
 };

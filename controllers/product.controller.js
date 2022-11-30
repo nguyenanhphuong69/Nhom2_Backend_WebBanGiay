@@ -21,4 +21,26 @@ module.exports = {
         });
       });
   },
+
+    //lấy chi tiết sản phẩm
+    getProductId(req, res) {
+      const id = req.params.id;
+      productModel
+        .getProductId(id)
+        .then((data) => {
+          res.status(200).json({
+            status: 200,
+            msg: `Get product with id: ${id} successfully`,
+            data: data,
+          });
+        })
+        .catch((error) => {
+          res.status(400).json({
+            status: 400,
+            msg: `Failed to get product with id: ${id}`,
+            data: error,
+          });
+        });
+    },
+    
 };

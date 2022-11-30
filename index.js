@@ -28,7 +28,7 @@ app.get('/', (req, res) => {
 //cổng admin
 const adminRouter = require("./routers/user.router.js");
 //cổng product
-const productRouter = require("./routers/product.route.js");
+const productRouter = require("./routers/product.router.js");
 //cổng cart
 const cartRouter = require("./routers/cart.router.js")
 
