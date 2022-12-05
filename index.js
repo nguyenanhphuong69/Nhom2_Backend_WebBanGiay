@@ -26,13 +26,16 @@ app.get('/', (req, res) => {
 })
 
 //cổng admin
-const adminRouter = require("./routers/user.router.js");
+const adminRouter = require("./routers/admin.router.js");
+//cổng customer 
+const customerRouter = require("./routers/customer.router.js");
 //cổng product
 const productRouter = require("./routers/product.route.js");
 //cổng cart
 const cartRouter = require("./routers/cart.router.js")
 
 app.use("/admin/", adminRouter);
+app.use("/customer/", customerRouter)
 app.use("/product/", productRouter);
 app.use("/cart/", cartRouter);
 
