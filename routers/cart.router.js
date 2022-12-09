@@ -8,8 +8,37 @@ router.get("/", checkAuth.checkAuthCustomer, cartController.getCartOfUser);
 
 //lấy chi tiết giỏ hàng
 router.get(
-"/item/:id",
-checkAuth.checkAuthCustomer,
-cartController.getCartItem
+  "/item/:id",
+  checkAuth.checkAuthCustomer,
+  cartController.getCartItem
 );
+
+//thêm sản phẩm vào giỏ hàng
+router.post(
+  "/addCartItem/:id_sp",
+  checkAuth.checkAuthCustomer,
+  cartController.addCartItem
+);
+
+//chỉnh sửa số lượng sản phẩm trong giỏ hàng
+router.patch(
+  "/updateQuantityProduct/:id",
+  checkAuth.checkAuthCustomer,
+  cartController.updateProductQuantity
+);
+
+//xóa sản phẩm trong giỏ hàng
+router.delete(
+  "/delete/:id",
+  checkAuth.checkAuthCustomer,
+  cartController.deleteCartItem
+);
+
+//xóa toàn bộ giỏ hàng
+router.delete(
+  "/deleteAll",
+  checkAuth.checkAuthCustomer,
+  cartController.deleteAllCartItems
+);
+
 module.exports = router;
