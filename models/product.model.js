@@ -29,6 +29,26 @@ module.exports = {
   async getProductId(id) {
     let product = await knex("sanpham").select("*").where("id", id);
     return product;
-  }
+  },
 
+  //thêm sản phẩm
+  async insertProduct(product) {
+    let result = await knex("sanpham").insert(product).returning("id");
+    return result;
+  },
+
+  //cập nhập sản phẩm
+  async updateProduct(product, id) {
+    let result = await knex("sanpham").update(product).where("id", id);
+    return result;
+  },
+
+  //xóa sản phẩm (xóa cứng)
+  async deleteProduct(id) {
+    let result = await knex("sanpham").del().where({
+      id: id,
+    });
+    return result;
+  },
+  
 };
