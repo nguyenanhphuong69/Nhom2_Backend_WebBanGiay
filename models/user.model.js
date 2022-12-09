@@ -3,7 +3,6 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 
-
 module.exports = {
   //lấy toàn bộ tài khoản customer (admin)
   async getAllCustomerAccount() {
@@ -37,6 +36,27 @@ module.exports = {
       )
       .where('id', id);
     return user;
+  },
+
+  //đăng ký tài khoản
+  async register(email, user) {
+    let registered = await knex('nguoidung')
+      .where('email', email)
+      .select('email');
+    var isRegistered = Object.values(JSON.parse(JSON.stringify(registered)));
+    console.log(isRegistered.length);
+    if (isRegistered.length === 1) {
+      return {
+        status: 400,
+        message: 'This email has already been registered',
+      };
+    } else {
+      let id = await knex('nguoidung').insert(user).returning('id');
+      return {
+        status: 200,
+        message: `Registered account with id : ${id}  successfully`,
+      };
+    }
   },
 
   //đăng nhập tài khoản admin
@@ -226,6 +246,60 @@ module.exports = {
       }
     }
   },
+
+  //chỉnh sửa thông tin cho tất cả tài khoản (admin)
+  async updateAllUser(id, user) {
+    await knex('nguoidung').update(user).where('id', id);
+    return {
+      status: 200,
+      message: `Update user with id : ${id} successfully`,
+    };
+  },
+
+  //thay đổi mật khẩu
+  async changePassword(id, user, oldPassword) {
+    //kiểm tra tài khoản có tồn tại không
+    let data = await knex('nguoidung').where({
+      id: id,
+    });
+    let existUser = Object.values(JSON.parse(JSON.stringify(data)));
+    if (existUser.length === 1) {
+      let match = await bcrypt.compare(oldPassword, existUser[0].password);
+      if (match) {
+        await knex('nguoidung').update(user).where('id', id);
+        return {
+          status: 200,
+          message: 'Change password successfully',
+        };
+      } else {
+        return {
+          status: 400,
+          message: 'Wrong old password',
+        };
+      }
+    } else {
+      return {
+        status: 400,
+        message: 'This account does not exist',
+      };
+    }
+  },
+
+  //chỉnh sửa tài khoản đang đăng nhập (customer )
+  async updateProfile(id, user) {
+    await knex('nguoidung').update(user).where('id', id);
+    return {
+      status: 200,
+      message: 'Update successfully',
+    };
+  },
+
+  //xóa tài khoản (admin)
+  async deleteUser(id) {
+    let result = await knex('nguoidung').del().where('id', id);
+    return result;
+  },
+  
 }
 
 

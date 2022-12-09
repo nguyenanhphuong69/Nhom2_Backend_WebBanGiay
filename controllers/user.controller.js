@@ -1,5 +1,6 @@
 const userModel = require('../models/user.model.js');
 const bcrypt = require('bcrypt');
+
 module.exports = {
   //lấy toàn bộ tài khoản Customer
   getAllCustomerAccount(req, res) {
@@ -20,6 +21,7 @@ module.exports = {
         });
       });
   },
+
   //lấy toàn bộ tài khoản admin với role admin
   getAllAdminAccount(req, res) {
     userModel
@@ -39,6 +41,7 @@ module.exports = {
         });
       });
   }, 
+
   //lấy thông tin tài khoản đang đăng nhập
   getProfile(req, res) {
     const userId = req.userData.id;
@@ -59,6 +62,102 @@ module.exports = {
         });
       });
   },
+
+  //đăng ký tài khoản với role admin
+  registerAsAdmin(req, res) {
+    const { email, username, hoten, password, ngaysinh, gioitinh, dienthoai } =
+      req.body;
+    if (password.length < 6) {
+      return res.status(400).json({
+        status: 400,
+        message: 'Password is at least 6 characters long.',
+      });
+    }
+    let reg = new RegExp(
+      '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$'
+    ).test(password);
+    if (!reg) {
+      return res.json({
+        status: 400,
+        message:
+          'Includes 8 characters, uppercase, lowercase and some and special characters.',
+      });
+    }
+    const salt = bcrypt.genSaltSync();
+    const hashPassword = bcrypt.hashSync(password, salt);
+    const user = {
+      email: email,
+      username: username,
+      hoten: hoten,
+      password: hashPassword,
+      ngaysinh: new Date(ngaysinh),
+      gioitinh: gioitinh,
+      dienthoai: dienthoai,
+      admin: 1,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    userModel
+      .register(email, user)
+      .then((msg) => {
+        return res.status(200).json(msg);
+      })
+      .catch((err) => {
+        return res.status(400).json({
+          status: 400,
+          message: 'Failed to register',
+          data: err,
+        });
+      });
+  },
+
+  //đăng ký tài khoản với role customer
+  registerAsCustomer(req, res) {
+    const { email, username, hoten, password, ngaysinh, gioitinh, dienthoai } =
+      req.body;
+    if (password.length < 6)
+      return res.status(400).json({
+        status: 400,
+        message: 'Password is at least 6 characters long.',
+      });
+    let reg = new RegExp(
+      '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$'
+    ).test(password);
+    if (!reg) {
+      return res.status(400).json({
+        status: 400,
+        message:
+          'Password must contain at least one number and one uppercase and lowercase and special letter, and at least 6 or more characters ',
+      });
+    }
+    const salt = bcrypt.genSaltSync();
+    const hashPassword = bcrypt.hashSync(password, salt);
+    const user = {
+      email: email,
+      username: username,
+      hoten: hoten,
+      password: hashPassword,
+      ngaysinh: new Date(ngaysinh),
+      gioitinh: gioitinh,
+      dienthoai: dienthoai,
+      admin: 0,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    userModel
+      .register(email, user)
+      .then((msg) => {
+        return res.status(200).json(msg);
+      })
+      .catch((err) => {
+        return res.status(400).json({
+          status: 400,
+          message: 'Failed to register',
+          data: err,
+        });
+      });
+  },
+
   //đăng nhập tài khoản admin
   loginAsAdmin(req, res) {
     const { email, password } = req.body;
@@ -80,6 +179,7 @@ module.exports = {
         });
       });
   },
+
   //đăng nhập tài khoản customer
   loginAsCustomer(req, res) {
     const { email, password } = req.body;
@@ -101,6 +201,7 @@ module.exports = {
         });
       });
   },
+
   //refresh token
   refreshToken(req, res) {
     //res.json(req.cookies.refreshToken)
@@ -117,6 +218,7 @@ module.exports = {
         });
       });
   },
+
   //logout
   logout(req, res) {
     // const token = browser.cookies.get({
@@ -142,6 +244,153 @@ module.exports = {
       });
   },
 
+  //chỉnh sửa toàn bộ tài khoản (admin)
+  updateAllUser(req, res) {
+    const {
+      username,
+      hoten,
+      ngaysinh,
+      gioitinh,
+      dienthoai,
+      admin,
+      public_id,
+      url,
+    } = req.body;
+
+    const id = req.params.id;
+    const user = {
+      username: username,
+      hoten: hoten,
+      ngaysinh: new Date(ngaysinh),
+      gioitinh: gioitinh,
+      dienthoai: dienthoai,
+      public_id: public_id,
+      url: url,
+      admin: admin,
+      updatedAt: new Date(),
+    };
+
+    userModel
+      .updateAllUser(id, user)
+      .then((result) => {
+        return res.status(200).json(result);
+      })
+      .catch((err) => {
+        return res.status(400).json({
+          status: 400,
+          message: 'Failed to update user',
+          data: err,
+        });
+      });
+  },
+
+  //Thay đổi mật khẩu tài khoản đang đăng nhập
+  changePassword(req, res) {
+    const id = req.userData.id;
+
+    const { oldPassword, password, confirmPassword } = req.body;
+    if (!password || !confirmPassword || !oldPassword)
+      return res.json({
+        status: 400,
+        message: 'Password , Confirm Password and Old Password are not empty.',
+      });
+
+    if (password.length < 6)
+      return res.json({
+        status: 400,
+        message: 'Password is at least 6 characters long.',
+      });
+    let reg = new RegExp(
+      '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$'
+    ).test(password);
+    if (!reg) {
+      return res.json({
+        status: 400,
+        message:
+          'Includes 8 characters, uppercase, lowercase and some and special characters.',
+      });
+    }
+    if (confirmPassword !== password) {
+      return res.json({
+        status: 400,
+        message: 'Password and confirm password does not match!',
+      });
+    }
+
+    const salt = bcrypt.genSaltSync();
+    const hashPassword = bcrypt.hashSync(password, salt);
+
+    const user = {
+      password: hashPassword,
+      updatedAt: new Date(),
+    };
+
+    userModel
+      .changePassword(id, user, oldPassword)
+      .then((result) => {
+        return res.status(200).json(result);
+      })
+      .catch((err) => {
+        return res.status(400).json({
+          status: 400,
+          message: 'Failed to change password',
+        });
+      });
+  },
+
+  //Chỉnh sửa thông tin tài khoản đang đăng nhập (customer)
+  updateProfile(req, res) {
+    const userId = req.userData.id;
+
+    const { hoten, username, ngaysinh, gioitinh, dienthoai, public_id, url } =
+      req.body;
+
+    const user = {
+      hoten: hoten,
+      username: username,
+      ngaysinh: new Date(ngaysinh),
+      gioitinh: gioitinh,
+      dienthoai: dienthoai,
+      public_id: public_id,
+      url: url,
+      updatedAt: new Date(),
+    };
+
+    userModel
+      .updateProfile(userId, user)
+      .then((result) => {
+        return res.status(200).json(result);
+      })
+      .catch((err) => {
+        return res.status(400).json({
+          status: 400,
+          message: 'Failed to update profile',
+        });
+      });
+  },
+
+  //xóa tài khoản (admin)
+  deleteUser(req, res) {
+    const id = req.params.id;
+
+    userModel
+      .deleteUser(id)
+      .then((result) => {
+        return res.status(200).json({
+          status: 200,
+          message: `Deleted user with id: ${id} successfully`,
+          data: result,
+        });
+      })
+      .catch((error) => {
+        return res.status(400).json({
+          status: 400,
+          message: `Failed to delete user with id: ${id}`,
+          data: error,
+        });
+      });
+  },
+  
 }
 
  
