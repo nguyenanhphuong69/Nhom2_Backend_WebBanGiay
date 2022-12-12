@@ -35,12 +35,15 @@ const productRouter = require("./routers/product.router.js");
 const cartRouter = require("./routers/cart.router.js");
 //cổng bill
 const billRouter = require("./routers/bill.router.js");
+//cổng address
+const addressRouter = require("./routers/address.router.js")
 
 app.use("/admin/", adminRouter);
 app.use("/customer/", customerRouter);
 app.use("/product/", productRouter);
 app.use("/cart/", cartRouter);
 app.use("/bill/", billRouter);
+app.use("/address/", addressRouter);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
