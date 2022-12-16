@@ -169,6 +169,10 @@ module.exports = {
           // path: "/user/refresh_token",
           maxAge: 24 * 60 * 60 * 1000,
         });
+        res.cookie('accessToken', data.accessToken, {
+          httpOnly: true,
+          maxAge: 24 * 60 * 60 * 1000,
+        });
         return res.json(data);
       })
       .catch((err) => {
@@ -191,6 +195,10 @@ module.exports = {
           // path: "/user/refresh_token",
           maxAge: 24 * 60 * 60 * 1000,
         });
+        res.cookie( 'accessToken', data.accessToken, {
+          httpOnly: true,
+          maxAge: 24 * 60 * 60 * 1000,
+        });
         return res.json(data);
       })
       .catch((err) => {
@@ -208,8 +216,14 @@ module.exports = {
     const token = req.cookies.refreshToken;
     userModel
       .refreshToken(token)
-      .then((result) => {
-        return res.status(200).json(result);
+      .then((data) => {
+        //return res.status(200).json(result);
+        res.cookie( 'accessToken', data.accessToken, {
+          httpOnly: true,
+          // path: "/user/refresh_token",
+          maxAge: 24 * 60 * 60 * 1000,
+        })
+        return res.json(data);
       })
       .catch((err) => {
         return res.status(400).json({
@@ -233,6 +247,7 @@ module.exports = {
       .logout(token)
       .then((result) => {
         res.clearCookie('refreshToken');
+        res.clearCookie('accessToken');
         return res.status(200).json(result);
       })
       .catch((err) => {
