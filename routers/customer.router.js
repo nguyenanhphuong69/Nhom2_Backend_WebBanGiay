@@ -10,7 +10,7 @@ router.get(
   );
   
 //lấy thông tin tài khoản đang đăng nhập
-router.get("/profile", checkAuth.checkAuthAdmin, userController.getProfile);
+router.get("/profile", checkAuth.checkAuthCustomer, userController.getProfile);
 
 //đăng ký tài khoản customer
 router.post('/register', userController.registerAsCustomer);
