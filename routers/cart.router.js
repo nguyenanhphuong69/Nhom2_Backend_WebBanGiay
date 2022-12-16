@@ -41,4 +41,11 @@ router.delete(
   cartController.deleteAllCartItems
 );
 
+//lấy tổng số lượng sản phẩm và tổng tiền của giỏ hàng
+router.get(
+  "/getAllQuantityAndPriceOfCart",
+  checkAuth.checkAuthCustomer,
+  cartController.getAllQuantityAndPriceOfCart
+);
+
 module.exports = router;
