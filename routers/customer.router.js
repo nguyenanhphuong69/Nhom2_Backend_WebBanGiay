@@ -10,7 +10,7 @@ router.get(
   );
   
 //lấy thông tin tài khoản đang đăng nhập
-router.get("/profile", checkAuth.checkAuthAdmin, userController.getProfile);
+router.get("/profile", checkAuth.checkAuthCustomer, userController.getProfile);
 
 //đăng ký tài khoản customer
 router.post('/register', userController.registerAsCustomer);
@@ -37,5 +37,8 @@ router.patch(
   checkAuth.checkAuthCustomer,
   userController.updateProfile
 );
+
+//quên mật khẩu (khách hàng)
+router.post('/forgotPassword', userController.forgotPasswordCustomer);
 
 module.exports = router;

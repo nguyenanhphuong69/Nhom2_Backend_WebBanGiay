@@ -46,4 +46,10 @@ router.delete(
   userController.deleteUser
 );
 
+//quên mật khẩu (Admin)
+router.post("/forgotPassword", userController.forgotPasswordAdmin);
+
+//hiển thị tài khoản đăng ký từ 3 ngày trước đến hiện tại
+router.get("/newUser", checkAuth.checkAuthAdmin, userController.getNewUser);
+
 module.exports = router;

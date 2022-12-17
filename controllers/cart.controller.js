@@ -165,5 +165,44 @@ module.exports = {
         });
       });
   },
-  
-}
+
+  //lấy tổng số lượng sp và tổng tiền của giỏ hàng
+  async getAllQuantityAndPriceOfCart(req, res) {
+    const idUser = req.userData.id;
+    cartModel
+      .getAllQuantityAndPriceOfCart(idUser)
+      .then((result) => {
+        return res.status(200).json({
+          status: 200,
+          message: "Get all quantity and price of cart successfully",
+          data: result,
+        });
+      })
+      .catch((err) => {
+        return res.status(400).json({
+          status: 400,
+          message: "Failed to get all quantity and price of cart successfully",
+          data: err,
+        });
+      });
+  },
+
+  //lấy tổng số lượng sp và tổng tiền của giỏ hàng
+  async getAllQuantityAndPriceOfCartForCreateBill(req, res, next) {
+    const idUser = req.userData.id;
+    cartModel
+      .getAllQuantityAndPriceOfCart(idUser)
+      .then((data) => {
+        req.tong_sl = data[0].tong_sl;
+        req.tongtien_gh = data[0].tongtien_gh;
+        next();
+      })
+      .catch((err) => {
+        return res.status(400).json({
+          status: 400,
+          message: "Failed to get all quantity and price of cart successfully",
+          data: err,
+        });
+      });
+  },
+};
