@@ -37,13 +37,16 @@ const cartRouter = require("./routers/cart.router.js");
 const billRouter = require("./routers/bill.router.js");
 //cổng billDetail
 const billDetailRouter = require("./routers/billDetail.router.js");
+//cổng category
+const categoryRouter = require("./routers/category.router.js")
 
 app.use("/admin/", adminRouter);
 app.use("/customer/", customerRouter);
 app.use("/product/", productRouter);
 app.use("/cart/", cartRouter);
 app.use("/bill/", billRouter);
-app.use("/billDetail/", billDetailRouter)
+app.use("/billDetail/", billDetailRouter);
+app.use("/category/", categoryRouter);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
