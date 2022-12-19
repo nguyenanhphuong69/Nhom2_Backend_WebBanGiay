@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const billController = require("../controllers/bill.controller.js");
+const cartController = require("../controllers/cart.controller.js")
+const billDetailController = require("../controllers/billDetail.controller.js")
 const checkAuth = require("../middleware/checkAuth.js");
-
 
 //xem hóa đơn toàn bộ khách hàng (Admin)
 router.get("/all", checkAuth.checkAuthAdmin, billController.getAllBill);
