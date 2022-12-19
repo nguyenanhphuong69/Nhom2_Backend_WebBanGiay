@@ -68,7 +68,9 @@ module.exports = {
     });
     let isAdmin = Object.values(JSON.parse(JSON.stringify(admin)));
     // console.log(isAdmin);
-    if (isAdmin.length === 1) {
+
+    if (isAdmin[0].admin === 1) {
+
       //return isAdmin[0].password;
       let match = await bcrypt.compare(password, isAdmin[0].password);
       if (match) {
