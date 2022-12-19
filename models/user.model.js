@@ -300,6 +300,297 @@ module.exports = {
     return result;
   },
   
+  //Quên mật khẩu tài khoản admin
+  async forgotPasswordAdmin(email) {
+    //kiểm tra email nhập vào có phải là admin và tồn tại trong db
+    let count = await knex('nguoidung').select('id', 'hoten').where({
+      email: email,
+      admin: 1,
+    });
+    var Count = Object.values(JSON.parse(JSON.stringify(count)));
+    if (Count.length === 1) {
+      //nếu tồn tại email như vậy thì update mật khẩu mới
+
+      //mật khẩu random 8 kí tự
+      var randPassword = Array(8)
+        .fill(
+          '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@!#$%^&*()_+=<>?/|'
+        )
+        .map(function (x) {
+          return x[Math.floor(Math.random() * x.length)];
+        })
+        .join('');
+
+      const salt = bcrypt.genSaltSync();
+      const hashPassword = bcrypt.hashSync(randPassword, salt);
+      var updatePassword = await knex('nguoidung')
+        .update({
+          password: hashPassword,
+        })
+        .where({
+          id: count[0].id,
+        });
+
+      //gửi email thông báo mật khẩu mới
+      var transporter = nodemailer.createTransport({
+        service: 'gmail',
+        secure: false, // use SSL
+        port: 25,
+        auth: {
+          user: 'bangphan3032k1@gmail.com',
+          pass: 'pypuvfocwaxevzrk',
+        },
+        tls: {
+          rejectUnauthorized: false,
+        },
+      });
+
+      // const handlebarOptions = {
+      //   viewEngine: {
+      //     extName: '.html',
+      //     partialsDir: path.resolve('../views'),
+      //     defaultLayout: false,
+      //   },
+      //   viewPath: path.resolve('../views'),
+      //   extName: '.html',
+      // };
+
+      transporter.use('compile', hbs(handlebarOptions));
+
+      var mailOptions = {
+        from: 'bangphan3032k1@gmail.com',
+        to: email,
+        subject: 'Forgot Password',
+        text: "New password: " + randPassword,
+      };
+
+      transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+      });
+
+      return {
+        status: 200,
+        message: 'New password was sent to email, please check your email',
+        data: updatePassword,
+      };
+    } else {
+      return {
+        status: 400,
+        message: 'This account does not exist',
+      };
+    }
+  },
+
+  //Quên mật khẩu tài khoản khách hàng
+  async forgotPasswordCustomer(email) {
+    //kiểm tra email nhập vào có phải là customer và tồn tại trong db
+    let count = await knex('nguoidung').select('id', 'hoten').where({
+      email: email,
+      admin: 0,
+    });
+    var Count = Object.values(JSON.parse(JSON.stringify(count)));
+    if (Count.length === 1) {
+      //nếu tồn tại email như vậy thì update mật khẩu mới
+
+      //mật khẩu random 8 kí tự
+      var randPassword = Array(8)
+        .fill(
+          '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@!#$%^&*()_+=<>?/|'
+        )
+        .map(function (x) {
+          return x[Math.floor(Math.random() * x.length)];
+        })
+        .join('');
+      const salt = bcrypt.genSaltSync();
+      const hashPassword = bcrypt.hashSync(randPassword, salt);
+      var updatePassword = await knex('nguoidung')
+        .update({
+          password: hashPassword,
+        })
+        .where({
+          id: count[0].id,
+        });
+
+      //gửi email thông báo mật khẩu mới
+      var transporter = nodemailer.createTransport({
+        service: 'gmail',
+        secure: false, // use SSL
+        port: 25,
+        auth: {
+          user: 'bangphan3032k1@gmail.com',
+          pass: 'pypuvfocwaxevzrk',
+        },
+        tls: {
+          rejectUnauthorized: false,
+        },
+      });
+
+      // const handlebarOptions = {
+      //   viewEngine: {
+      //     extName: '.html',
+      //     partialsDir: path.resolve('../views'),
+      //     defaultLayout: false,
+      //   },
+      //   viewPath: path.resolve('../views'),
+      //   extName: '.html',
+      // };
+
+      //transporter.use('compile', hbs(handlebarOptions));
+
+      var mailOptions = {
+        from: 'bangphan3032k1@gmail.com',
+        to: email,
+        subject: 'Forgot Password',
+        text: "New password: " + randPassword
+      };
+
+      transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+      });
+
+      return {
+        status: 200,
+        message: 'New password was sent to email, please check your email',
+        data: updatePassword,
+      };
+    } else {
+      return {
+        status: 400,
+        message: 'This account does not exist',
+      };
+    }
+  },
+
+  //hiển thị tài khoản đăng ký từ 3 ngày trước đến hiện tại
+  async getNewUser() {
+    const get_day_of_time = (d1, d2) => {
+      let ms1 = d1.getTime();
+      let ms2 = d2.getTime();
+      return Math.ceil((ms2 - ms1) / (24 * 60 * 60 * 1000));
+    };
+
+    let ds_nd = await knex('nguoidung').select('*').where('admin', 0);
+
+    var today = new Date();
+
+    var result = [];
+
+    for (var i = 0; i < ds_nd.length; i++) {
+      var time = get_day_of_time(ds_nd[i].createdAt, today);
+      if (time <= 3) {
+        result.push(ds_nd[i]);
+      }
+    }
+
+    if (result.length === 0) {
+      return {
+        status: 200,
+        message: 'No users have recently signed up for an account',
+        data: result,
+      };
+    } else {
+      return {
+        status: 200,
+        message: 'Get new user successfully',
+        data: result,
+      };
+    }
+  },
+
+  async loginByGoogle(google_id, user) {
+    //kiểm tra tài khoản google này đã đăng ký chưa
+    let registered = await knex('nguoidung')
+      .where({
+        google_id: google_id,
+        kieu_dangnhap: 'Google',
+      })
+      .select('*');
+    var isRegistered = Object.values(JSON.parse(JSON.stringify(registered)));
+    console.log(isRegistered.length);
+
+    //nếu có tài khoản gg trong database thì sẽ gửi token
+    if (isRegistered.length === 1) {
+      let id = isRegistered[0].id;
+      let admin = isRegistered[0].admin;
+
+      let accessToken = jwt.sign(
+        { id, admin },
+        process.env.ACCESS_TOKEN_SECRET,
+        {
+          expiresIn: '1h',
+        }
+      );
+
+      let refreshToken = jwt.sign(
+        { id, admin },
+        process.env.REFRESH_TOKEN_SECRET,
+        {
+          expiresIn: '1d',
+        }
+      );
+
+      await knex('nguoidung')
+        .where({
+          id: id,
+        })
+        .update({
+          refresh_token: refreshToken,
+          thisKeyIsSkipped: undefined,
+        });
+
+      return {
+        status: 200,
+        message: 'Login successful',
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+      };
+    }
+    //nếu chưa có tài khoản trong database thì tạo tài khoản rồi gửi token
+    else {
+      let id = await knex('nguoidung').insert(user).returning('id');
+      let admin = 0;
+
+      let accessToken = jwt.sign(
+        { id, admin },
+        process.env.ACCESS_TOKEN_SECRET,
+        {
+          expiresIn: '1h',
+        }
+      );
+
+      let refreshToken = jwt.sign(
+        { id, admin },
+        process.env.REFRESH_TOKEN_SECRET,
+        {
+          expiresIn: '1d',
+        }
+      );
+
+      await knex('nguoidung')
+        .where({
+          id: id,
+        })
+        .update({
+          refresh_token: refreshToken,
+          thisKeyIsSkipped: undefined,
+        });
+
+      return {
+        status: 200,
+        message: 'Login successful',
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+      };
+    }
+  },
 }
 
 

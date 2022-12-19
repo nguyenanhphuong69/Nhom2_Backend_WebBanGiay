@@ -169,6 +169,10 @@ module.exports = {
           // path: "/user/refresh_token",
           maxAge: 24 * 60 * 60 * 1000,
         });
+        res.cookie('accessToken', data.accessToken, {
+          httpOnly: true,
+          maxAge: 24 * 60 * 60 * 1000,
+        });
         return res.json(data);
       })
       .catch((err) => {
@@ -191,6 +195,10 @@ module.exports = {
           // path: "/user/refresh_token",
           maxAge: 24 * 60 * 60 * 1000,
         });
+        res.cookie( 'accessToken', data.accessToken, {
+          httpOnly: true,
+          maxAge: 24 * 60 * 60 * 1000,
+        });
         return res.json(data);
       })
       .catch((err) => {
@@ -208,8 +216,14 @@ module.exports = {
     const token = req.cookies.refreshToken;
     userModel
       .refreshToken(token)
-      .then((result) => {
-        return res.status(200).json(result);
+      .then((data) => {
+        //return res.status(200).json(result);
+        res.cookie( 'accessToken', data.accessToken, {
+          httpOnly: true,
+          // path: "/user/refresh_token",
+          maxAge: 24 * 60 * 60 * 1000,
+        })
+        return res.json(data);
       })
       .catch((err) => {
         return res.status(400).json({
@@ -233,6 +247,7 @@ module.exports = {
       .logout(token)
       .then((result) => {
         res.clearCookie('refreshToken');
+        res.clearCookie('accessToken');
         return res.status(200).json(result);
       })
       .catch((err) => {
@@ -390,7 +405,82 @@ module.exports = {
         });
       });
   },
-  
-}
+
+  //quên mật khẩu tài khoản admin
+  forgotPasswordAdmin(req, res) {
+    const { email } = req.body;
+    userModel
+      .forgotPasswordAdmin(email)
+      .then((data) => {
+        return res.status(200).json(data);
+      })
+      .catch((err) => {
+        return res.status(400).json({
+          status: 400,
+          message: 'Failed to handle forgot password',
+          data: err,
+        });
+      });
+  },
+
+  //quên mật khẩu tài khoản khách hàng
+  forgotPasswordCustomer(req, res) {
+    const { email } = req.body;
+    userModel
+      .forgotPasswordCustomer(email)
+      .then((data) => {
+        return res.status(200).json(data);
+      })
+      .catch((err) => {
+        return res.status(400).json({
+          status: 400,
+          message: 'Failed to handle forgot password',
+          data: err,
+        });
+      });
+  },
+
+  //hiển thị tài khoản đăng ký từ 3 ngày trước đến hiện tại
+  getNewUser(req, res) {
+    userModel
+      .getNewUser()
+      .then((result) => {
+        return res.status(200).json(result);
+      })
+      .catch((err) => {
+        return res.status(400).json({
+          status: 400,
+          message: 'Failed to get new user',
+          data: err,
+        });
+      });
+  },
+
+  loginByGoogle(req, res) {
+    const hoten = req.hoten;
+    const google_id = req.google_id;
+
+    const user = {
+      hoten: hoten,
+      google_id: google_id,
+      kieu_dangnhap: 'Google',
+      admin: 0,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    userModel
+      .loginByGoogle(google_id, user)
+      .then((msg) => {
+        return res.status(200).json(msg);
+      })
+      .catch((err) => {
+        return res.json({
+          status: 400,
+          message: 'Failed login by google',
+          data: err,
+        });
+      });
+  },
+};
 
  
