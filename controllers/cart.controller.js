@@ -1,4 +1,5 @@
 const cartModel = require("../models/cart.model.js");
+const productModel = require("../models/product.model.js")
 
 module.exports = {
   //lấy ra giỏ hàng của khách hàng đang đăng nhập
