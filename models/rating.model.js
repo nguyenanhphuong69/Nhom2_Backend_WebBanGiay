@@ -17,7 +17,7 @@ module.exports = {
         "danhgia.updatedAt",
         "danhgia.deleted_fg"
       )
-      .where("hoadon.tinhtrangHD", "Đã nhận hàng");
+      .where("hoadon.tinhtrangHD", "Đã nhận hàng");
     return ratings;
   },
 
@@ -27,7 +27,7 @@ module.exports = {
     let canRating = await knex("hoadon").count("id as a").where({
       id: bill.id_hd,
       id_nd: bill.id_nd,
-      tinhtrangHD: "Đã nhận hàng",
+      tinhtrangHD: "Đã nhận hàng",
     });
     if (canRating[0].a === 1) {
       let result = await knex("danhgia").insert(rating).returning("id");

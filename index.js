@@ -43,6 +43,10 @@ const categoryRouter = require("./routers/category.router.js");
 const voucherRouter = require("./routers/voucher.router.js");
 //cổng rating
 const ratingRouter = require("./routers/rating.router.js")
+//cổng payment
+const paymentRouter = require("./routers/payment.router.js")
+//cổng address
+const addressRouter = require("./routers/address.router.js")
 
 app.use("/admin/", adminRouter);
 app.use("/customer/", customerRouter);
@@ -53,6 +57,8 @@ app.use("/billDetail/", billDetailRouter);
 app.use("/category/", categoryRouter);
 app.use("/voucher/", voucherRouter);
 app.use("/rating/", ratingRouter)
+app.use("/payment/", paymentRouter)
+app.use("/address/", addressRouter)
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
