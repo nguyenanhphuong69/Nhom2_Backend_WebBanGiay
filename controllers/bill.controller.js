@@ -1,4 +1,5 @@
 const billModel = require("../models/bill.model.js");
+const voucherModel = require("../models/voucher.model.js")
 
 module.exports = {
   //xem hóa đơn toàn bộ khách hàng (Admin)
