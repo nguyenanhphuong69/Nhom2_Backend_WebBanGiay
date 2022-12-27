@@ -5,9 +5,9 @@ const checkAuth = require("../middleware/checkAuth.js");
 const fs = require("fs");
 
 cloudinary.config({
-  cloud_name: "order-food",
-  api_key: "887187822811327",
-  api_secret: "weQfCg8Ix_Yo6kjddazodw-1h2A",
+  cloud_name: "dvlizattd",
+  api_key: "581757349783512",
+  api_secret: "USX59WswPObH6eIrb2ODb488hoE",
 });
 // Upload product's image only admin can use
 router.post("/uploadProduct/admin", checkAuth.checkAuthAdmin, (req, res) => {

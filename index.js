@@ -47,7 +47,10 @@ const ratingRouter = require("./routers/rating.router.js")
 const paymentRouter = require("./routers/payment.router.js")
 //cổng address
 const addressRouter = require("./routers/address.router.js")
+//cổng upload ảnh
+const upload = require("./routers/upload.js");
 
+app.use("/cloud/", upload);
 app.use("/admin/", adminRouter);
 app.use("/customer/", customerRouter);
 app.use("/product/", productRouter);
