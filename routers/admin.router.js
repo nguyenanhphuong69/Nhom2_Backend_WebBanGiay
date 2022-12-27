@@ -7,6 +7,13 @@ const checkAuth = require("../middleware/checkAuth.js");
 router.get(
   "/adminAccount",
   checkAuth.checkAuthAdmin,
+  userController.getAllAdminAccount
+);
+
+//lấy tất cả thông tin tài khoản customer
+router.get(
+  "/customerAccount",
+  checkAuth.checkAuthAdmin,
   userController.getAllCustomerAccount
 );
 
