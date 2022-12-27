@@ -15,7 +15,6 @@ router.get(
   "/adminAccount",
   checkAuth.checkAuthAdmin,
   userController.getAllAdminAccount
-);
 
 //lấy thông tin tài khoản đang đăng nhập
 router.get("/profile", checkAuth.checkAuthAdmin, userController.getProfile);
