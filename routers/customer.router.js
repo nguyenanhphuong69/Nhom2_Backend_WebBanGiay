@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const userController = require("../controllers/user.controller.js");
 const checkAuth = require("../middleware/checkAuth.js");
-  
+
 //lấy thông tin tài khoản đang đăng nhập
 router.get("/profile", checkAuth.checkAuthCustomer, userController.getProfile);
 
