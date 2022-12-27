@@ -3,11 +3,18 @@ const router = express.Router();
 const userController = require("../controllers/user.controller.js");
 const checkAuth = require("../middleware/checkAuth.js");
 
+//lấy tất cả thông tin tài khoản customer
+router.get(
+  "/customerAccount",
+  checkAuth.checkAuthAdmin,
+  userController.getAllCustomerAccount
+);
+
 //lấy tất cả thông tin tài khoản admin
 router.get(
   "/adminAccount",
   checkAuth.checkAuthAdmin,
-  userController.getAllCustomerAccount
+  userController.getAllAdminAccount
 );
 
 //lấy thông tin tài khoản đang đăng nhập
