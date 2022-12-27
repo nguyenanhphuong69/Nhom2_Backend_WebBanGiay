@@ -99,7 +99,7 @@ module.exports = {
           })
           .update({
             refresh_token: refreshToken,
-            thisKeyIsSkipped: undefined,
+            //thisKeyIsSkipped: undefined,
           });
 
         return {
@@ -160,7 +160,7 @@ module.exports = {
           })
           .update({
             refresh_token: refreshToken,
-            thisKeyIsSkipped: undefined,
+            //thisKeyIsSkipped: undefined,
           });
 
         return {

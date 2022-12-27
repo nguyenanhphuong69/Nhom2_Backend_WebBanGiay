@@ -48,6 +48,8 @@ const paymentRouter = require("./routers/payment.router.js")
 //cổng address
 const addressRouter = require("./routers/address.router.js")
 
+const loginGoogleRouter = require("./routers/loginGoogle.js");
+
 app.use("/admin/", adminRouter);
 app.use("/customer/", customerRouter);
 app.use("/product/", productRouter);
@@ -59,6 +61,7 @@ app.use("/voucher/", voucherRouter);
 app.use("/rating/", ratingRouter)
 app.use("/payment/", paymentRouter)
 app.use("/address/", addressRouter)
+app.use("/auth/google/", loginGoogleRouter)
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
