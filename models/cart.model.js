@@ -3,7 +3,10 @@ const knex = require("../db/database.js");
 module.exports = {
   //lấy ra giỏ hàng của khách hàng đang đăng nhập
   async getCartOfUser(idUser) {
-    let data = await knex("giohang").select("*").where("id_nd", idUser);
+    let data = await knex("giohang")
+      .select("giohang.*", "sanpham.tensp", "sanpham.url")
+      .join("sanpham", "sanpham.id", "giohang.id_sp")
+      .where("id_nd", idUser);
     return data;
   },
 
