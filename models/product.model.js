@@ -31,6 +31,12 @@ module.exports = {
     return product;
   },
 
+  //lấy chi tiết sản phẩm theo từ khóa
+  async getProductWithKeyword(keyword) {
+    let product = await knex("sanpham").select("*").where('tensp', 'like', '%'+keyword+'%');
+    return product;
+  },
+
   //thêm sản phẩm
   async insertProduct(product) {
     let result = await knex("sanpham").insert(product).returning("id");

@@ -5,8 +5,12 @@ const checkAuth = require("../middleware/checkAuth.js")
 
 //GET all product
 router.get("/", productController.getAllProducts);
+
 //GET one product
-router.get("/:id", productController.getProductId);
+router.get("/detail/:id", productController.getProductId);
+
+//GET product with keyword
+router.get("/search", productController.getProductWithKeyword);
 
 //POST
 router.post("/", checkAuth.checkAuthAdmin, productController.insertProduct);

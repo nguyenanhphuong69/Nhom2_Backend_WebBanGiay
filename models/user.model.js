@@ -51,10 +51,11 @@ module.exports = {
         message: 'This email has already been registered',
       };
     } else {
-      let id = await knex('nguoidung').insert(user).returning('id');
+      const result = await knex('nguoidung').insert(user)
+      console.log(result)
       return {
         status: 200,
-        message: `Registered account with id : ${id}  successfully`,
+        message: `Registered account successfully`,
       };
     }
   },
@@ -160,7 +161,6 @@ module.exports = {
           })
           .update({
             refresh_token: refreshToken,
-            thisKeyIsSkipped: undefined,
           });
 
         return {
