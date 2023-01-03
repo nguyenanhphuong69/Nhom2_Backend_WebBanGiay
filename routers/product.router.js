@@ -7,10 +7,10 @@ const checkAuth = require("../middleware/checkAuth.js")
 router.get("/", productController.getAllProducts);
 
 //GET one product
-router.get("/detail/:id", productController.getProductId);
+router.get("/:id", productController.getProductId);
 
 //GET product with keyword
-router.get("/search", productController.getProductWithKeyword);
+// router.get("/search", productController.getProductWithKeyword);
 
 //POST
 router.post("/", checkAuth.checkAuthAdmin, productController.insertProduct);
