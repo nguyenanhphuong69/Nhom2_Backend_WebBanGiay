@@ -49,6 +49,7 @@ const paymentRouter = require("./routers/payment.router.js")
 const addressRouter = require("./routers/address.router.js")
 //cổng upload ảnh
 const upload = require("./routers/upload.js");
+const loginGoogle = require("./routers/loginGoogle");
 
 app.use("/cloud/", upload);
 app.use("/admin/", adminRouter);
@@ -59,9 +60,10 @@ app.use("/bill/", billRouter);
 app.use("/billDetail/", billDetailRouter);
 app.use("/category/", categoryRouter);
 app.use("/voucher/", voucherRouter);
-app.use("/rating/", ratingRouter)
-app.use("/payment/", paymentRouter)
-app.use("/address/", addressRouter)
+app.use("/rating/", ratingRouter);
+app.use("/payment/", paymentRouter);
+app.use("/address/", addressRouter);
+app.use("/auth/google/", loginGoogle)
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)

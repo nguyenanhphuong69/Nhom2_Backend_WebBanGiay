@@ -113,7 +113,7 @@ module.exports = {
 
   //đăng ký tài khoản với role customer
   registerAsCustomer(req, res) {
-    const { email, username, hoten, password, ngaysinh, gioitinh, dienthoai } =
+    const { email, hoten, password, ngaysinh, gioitinh, dienthoai } =
       req.body;
     if (password.length < 6)
       return res.status(400).json({
@@ -134,7 +134,6 @@ module.exports = {
     const hashPassword = bcrypt.hashSync(password, salt);
     const user = {
       email: email,
-      username: username,
       hoten: hoten,
       password: hashPassword,
       ngaysinh: new Date(ngaysinh),
@@ -147,7 +146,12 @@ module.exports = {
     userModel
       .register(email, user)
       .then((msg) => {
-        return res.status(200).json(msg);
+        console.log(msg.status)
+        if(msg.status === 200){
+          return res.status(200).json(msg);
+        } else {
+          return res.status(400).json(msg);
+        } 
       })
       .catch((err) => {
         return res.status(400).json({
@@ -173,7 +177,11 @@ module.exports = {
           httpOnly: true,
           maxAge: 24 * 60 * 60 * 1000,
         });
-        return res.json(data);
+        if(data.status === 200){
+          return res.status(200).json(data);
+        } else {
+          return res.status(400).json(data);
+        }
       })
       .catch((err) => {
         return res.status(400).json({
@@ -429,7 +437,11 @@ module.exports = {
     userModel
       .forgotPasswordCustomer(email)
       .then((data) => {
-        return res.status(200).json(data);
+        if(data.status === 200){
+          return res.status(200).json(data);
+        } else {
+          return res.status(400).json(data);
+        }
       })
       .catch((err) => {
         return res.status(400).json({

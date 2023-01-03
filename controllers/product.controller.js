@@ -43,6 +43,27 @@ module.exports = {
       });
   },
 
+   //lấy chi tiết sản phẩm theo từ khóa
+   getProductWithKeyword(req, res) {
+    const keyword = req.query.keyword;
+    productModel
+      .getProductWithKeyword(keyword)
+      .then((data) => {
+        res.status(200).json({
+          status: 200,
+          msg: `Get product with keyword: ${keyword} successfully`,
+          data: data,
+        });
+      })
+      .catch((error) => {
+        res.status(400).json({
+          status: 400,
+          msg: `Failed to get product with keyword: ${keyword}`,
+          data: error,
+        });
+      });
+  },
+
   //thêm sản phẩm
   insertProduct(req, res) {
     const { tensp, chitiet, size, gia, public_id, url, id_dm } = req.body;
